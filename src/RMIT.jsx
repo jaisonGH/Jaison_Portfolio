@@ -134,7 +134,7 @@ function RMIT() {
           <div className="rmit-graduation">
             <div className="rmit-graduation-photo">
               <img
-                src="/images/rmit-graduation.jpeg"
+                src={`${import.meta.env.BASE_URL}images/rmit-graduation.jpeg`}
                 alt="Jaison's RMIT Master of Cyber Security graduation"
                 onError={(event) => {
                   event.currentTarget.style.display = 'none'

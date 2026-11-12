@@ -248,7 +248,7 @@ function App() {
           <div className="education-card">
             <div className="education-image">
               <img
-                src="/images/kristu-jyoti-college.jpg"
+                src={`${import.meta.env.BASE_URL}images/kristu-jyoti-college.jpg`}
                 alt="Kristu Jyoti College campus"
               />
               <span className="image-caption">THE CAMPUS YEARS</span>
@@ -341,7 +341,10 @@ function App() {
             </div>
 
             <div className="daksh-image">
-              <img src="/images/daksh-2019.jpeg" alt="DAKSH 2019" />
+              <img
+                src={`${import.meta.env.BASE_URL}images/daksh-2019.jpeg`}
+                alt="DAKSH 2019"
+              />
               <span>DAKSH · 2019</span>
             </div>
           </div>
@@ -353,7 +356,7 @@ function App() {
         <div className="content-width graduation-layout">
           <div className="graduation-image">
             <img
-              src="/images/mca-graduation.jpeg"
+              src={`${import.meta.env.BASE_URL}images/mca-graduation.jpeg`}
               alt="MCA graduation"
             />
           </div>
@@ -413,7 +416,7 @@ function App() {
 
             <div className="tcs-opening-photo">
               <img
-                src="/images/tcs.jpg"
+                src={`${import.meta.env.BASE_URL}images/tcs.jpg`}
                 alt="Tata Consultancy Services office"
               />
               <span>TCS · 2019</span>
