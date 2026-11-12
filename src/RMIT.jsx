@@ -1,4 +1,5 @@
 
+import { useRef } from 'react'
 import { motion } from 'motion/react'
 import {
   GraduationCap,
@@ -20,6 +21,9 @@ const reveal = {
 }
 
 function RMIT() {
+  const graduationDialogRef = useRef(null)
+  const graduationImage = `${import.meta.env.BASE_URL}images/rmit-graduation.jpeg`
+
   return (
     <>
       {/* TRANSITION FROM TCS TO CYBERSECURITY */}
@@ -132,23 +136,19 @@ function RMIT() {
 
           {/* GRADUATION */}
           <div className="rmit-graduation">
-            <div className="rmit-graduation-photo">
+            <button
+              className="rmit-graduation-photo zoomable-photo"
+              type="button"
+              aria-label="Enlarge RMIT graduation photograph"
+              onClick={() => graduationDialogRef.current?.showModal()}
+            >
               <img
-                src={`${import.meta.env.BASE_URL}images/rmit-graduation.jpeg`}
-                alt="Jaison's RMIT Master of Cyber Security graduation"
-                onError={(event) => {
-                  event.currentTarget.style.display = 'none'
-                }}
+                src={graduationImage}
+                alt="Jaison at his RMIT Master of Cyber Security graduation in 2025"
+                loading="lazy"
               />
-              <div className="rmit-photo-placeholder">
-                <GraduationCap size={38} />
-                <span>RMIT GRADUATION · 2025</span>
-                <small>
-                  Add your graduation photograph as
-                  rmit-graduation.jpeg in public/images
-                </small>
-              </div>
-            </div>
+              <span className="rmit-photo-zoom-hint" aria-hidden="true">Click to enlarge</span>
+            </button>
 
             <div className="rmit-graduation-copy">
               <p className="section-kicker">A MILESTONE IN MELBOURNE</p>
@@ -191,7 +191,7 @@ function RMIT() {
               </h2>
             </div>
 
-            <span className="xspectre-period">APRIL - JUNE 2025</span>
+            <span className="xspectre-period">APRIL – JUNE 2025</span>
           </header>
 
           <div className="xspectre-company">
@@ -201,11 +201,11 @@ function RMIT() {
 
             <div>
               <h3>XSPECTRE Cybersecurity</h3>
-                          <p>
-                              Vulnerability Management Intern · April – June 2025
-                              <br />
-                              Greensborough, Melbourne, Australia
-                          </p>
+              <p>
+                Vulnerability Management Intern · April – June 2025
+                <br />
+                Greensborough, Melbourne, Australia
+              </p>
             </div>
           </div>
 
@@ -223,13 +223,12 @@ function RMIT() {
               </div>
               <span>01 / SCANNER SETUP</span>
               <h3>Building a vulnerability scanner.</h3>
-                          <p>
-                              Set up a Linux-based vulnerability scanning environment
-                              using Greenbone Community Edition (GVM), including
-                              scanner configuration and feed updates. Investigated
-                              and resolved a technical issue that was preventing
-                              the scanner from functioning correctly.
-                          </p>
+              <p>
+                Set up a Linux-based vulnerability scanning environment
+                using Greenbone Community Edition (GVM), including scanner
+                configuration and feed updates. Resolved a technical issue
+                that was preventing the scanner from functioning correctly.
+              </p>
               <div className="xspectre-tags">
                 <span>Linux</span>
                 <span>Greenbone</span>
@@ -311,6 +310,25 @@ function RMIT() {
           </div>
         </div>
       </section>
+
+      <dialog
+        className="rmit-photo-dialog"
+        ref={graduationDialogRef}
+        aria-label="RMIT graduation photograph"
+        onClick={(event) => {
+          if (event.target === event.currentTarget) event.currentTarget.close()
+        }}
+      >
+        <button
+          type="button"
+          className="rmit-photo-dialog-close"
+          aria-label="Close photograph"
+          onClick={() => graduationDialogRef.current?.close()}
+        >
+          Close ×
+        </button>
+        <img src={graduationImage} alt="Jaison at his RMIT Master of Cyber Security graduation in 2025" />
+      </dialog>
     </>
   )
 }

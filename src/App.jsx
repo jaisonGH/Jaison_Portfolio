@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   ArrowDown,
@@ -22,12 +22,15 @@ import {
   Activity,
   GitBranch,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Download,
 } from 'lucide-react'
 
 import './App.css'
 import './TCS.css'
 import RMIT from './RMIT'
-import Woodside from './Woodside';
+import Woodside from './Woodside'
 
 const reveal = {
   hidden: { opacity: 0, y: 22 },
@@ -35,20 +38,89 @@ const reveal = {
 }
 
 const timeline = [
-  { year: '2016', title: 'The beginning', detail: 'Started my MCA journey' },
-  { year: '2019', title: 'MCA Graduation', detail: 'Completed my first Master’s degree' },
-  { year: '2019', title: 'Tata Consultancy Services', detail: 'Started as a Systems Engineer' },
-  { year: '2022', title: 'A new direction', detail: 'Completed my TCS chapter' },
-  { year: '2023', title: 'RMIT University', detail: 'Started my Master of Cyber Security in Melbourne' },
-  { year: '2025', title: 'XSPECTRE Cybersecurity', detail: 'Vulnerability Management Internship · April to June' },
-  { year: '2025', title: 'RMIT Graduation', detail: 'Graduated with a Master of Cyber Security' },
-  { year: '2026', title: 'Woodside Energy', detail: 'EUC Support Deployment Engineer · Melbourne, Australia' },
+  { year: '2016', title: 'The beginning', detail: 'Started my MCA journey', target: 'education' },
+  { year: '2019', title: 'MCA Graduation', detail: 'Completed my first Master’s degree', target: 'education' },
+  { year: '2019', title: 'Tata Consultancy Services', detail: 'Started as a Systems Engineer', target: 'tcs' },
+  { year: '2022', title: 'A new direction', detail: 'Completed my TCS chapter', target: 'tcs' },
+  { year: '2023', title: 'RMIT University', detail: 'Started my Master of Cyber Security in Melbourne', target: 'rmit' },
+  { year: '2025', title: 'XSPECTRE Cybersecurity', detail: 'Vulnerability Management Internship · April to June', target: 'xspectre' },
+  { year: '2025', title: 'RMIT Graduation', detail: 'Graduated with a Master of Cyber Security', target: 'rmit' },
+  { year: '2026', title: 'Woodside Energy', detail: 'EUC Support Deployment Engineer · Melbourne, Australia', target: 'woodside' },
 ]
 
 function App() {
   const [contactOpen, setContactOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const [lightbox, setLightbox] = useState(null)
+
+  useEffect(() => {
+    const updateScroll = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight
+      setScrollProgress(scrollable > 0 ? Math.min(100, (window.scrollY / scrollable) * 100) : 0)
+      setShowBackToTop(window.scrollY > 550)
+    }
+    updateScroll()
+    window.addEventListener('scroll', updateScroll, { passive: true })
+    window.addEventListener('resize', updateScroll)
+    return () => {
+      window.removeEventListener('scroll', updateScroll)
+      window.removeEventListener('resize', updateScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!contactOpen && !lightbox) return undefined
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onEscape = (event) => {
+      if (event.key === 'Escape') {
+        setLightbox(null)
+        setContactOpen(false)
+      }
+    }
+    document.addEventListener('keydown', onEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onEscape)
+    }
+  }, [contactOpen, lightbox])
+
+  const closeMenus = () => {
+    setMobileMenuOpen(false)
+    setOpenDropdown(null)
+  }
+
+  const openPhoto = (src, alt) => setLightbox({ src, alt })
+
+  const photoKeyDown = (event, src, alt) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      openPhoto(src, alt)
+    }
+  }
+
+  const renderDropdown = (label, id, links) => (
+    <div className={`nav-dropdown ${openDropdown === id ? 'nav-dropdown-active' : ''}`}>
+      <button
+        className="nav-dropdown-trigger"
+        type="button"
+        aria-expanded={openDropdown === id}
+        aria-controls={`nav-${id}-menu`}
+        onClick={() => setOpenDropdown(current => current === id ? null : id)}
+      >
+        {label} <ChevronDown className="dropdown-arrow" size={15} aria-hidden="true" />
+      </button>
+      <div className="nav-dropdown-menu" id={`nav-${id}-menu`}>
+        {links.map(link => (
+          <a key={link.href} href={link.href} onClick={closeMenus}>{link.label}</a>
+        ))}
+      </div>
+    </div>
+  )
 
   const email = 'write2jais22@gmail.com'
   const phone = '+61423603560'
@@ -65,37 +137,30 @@ function App() {
 
   return (
     <main>
+      {/* Reading progress */}
+      <div className="reading-progress" role="progressbar" aria-label="Page reading progress" aria-valuenow={Math.round(scrollProgress)} aria-valuemin={0} aria-valuemax={100} style={{ width: `${scrollProgress}%` }} />
+
       {/* NAVIGATION */}
-      <nav className="navbar">
-        <a className="nav-logo" href="#home" aria-label="Jaison Thomas home">
-          JT<span>.</span>
-        </a>
-        <button
-          className="mobile-menu-toggle"
-          type="button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      <nav className="navbar" aria-label="Main navigation">
+        <a className="nav-logo" href="#home" onClick={closeMenus} aria-label="Jaison Thomas home">JT<span>.</span></a>
+        <button className="mobile-menu-toggle" type="button"
+          onClick={() => { setMobileMenuOpen(current => !current); setOpenDropdown(null) }}
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileMenuOpen}
-        >
+          aria-expanded={mobileMenuOpen} aria-controls="primary-navigation">
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-        <div className={`nav-links ${mobileMenuOpen ? 'nav-links-open' : ''}`}>
-          <a href="#journey" onClick={() => setMobileMenuOpen(false)}>
-            Journey
-          </a>
-          <a href="#education" onClick={() => setMobileMenuOpen(false)}>Education</a>
-          <a href="#tcs" onClick={() => setMobileMenuOpen(false)}>TCS</a>
-          <a href="#rmit" onClick={() => setMobileMenuOpen(false)}>RMIT</a>
-          <a href="#xspectre" onClick={() => setMobileMenuOpen(false)}>XSPECTRE</a>
-          <a href="#woodside" onClick={() => setMobileMenuOpen(false)}>Woodside</a>
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false)
-              setContactOpen(true)
-            }}
-          >
-            Contact
-          </button>
+        <div id="primary-navigation" className={`nav-links ${mobileMenuOpen ? 'nav-links-open' : ''}`}>
+          <a href="#journey" onClick={closeMenus}>Journey</a>
+          {renderDropdown('Education', 'education', [
+            { href: '#education', label: 'Master of Computer Applications' },
+            { href: '#rmit', label: 'Master of Cyber Security' },
+          ])}
+          {renderDropdown('Experience', 'experience', [
+            { href: '#tcs', label: 'Tata Consultancy Services' },
+            { href: '#xspectre', label: 'XSPECTRE Cybersecurity' },
+            { href: '#woodside', label: 'Woodside Energy' },
+          ])}
+          <button type="button" onClick={() => { closeMenus(); setContactOpen(true) }}>Contact</button>
         </div>
       </nav>
 
@@ -117,17 +182,21 @@ function App() {
             </motion.div>
 
             <motion.h1 variants={reveal}>
-              Built through
-              <br />
-              <span>experience.</span>
+              Jaison Thomas<span>.</span>
             </motion.h1>
 
+            <motion.p className="hero-tagline" variants={reveal}>
+              IT Professional <span>•</span> Cyber Security Graduate
+            </motion.p>
+
             <motion.p className="hero-description" variants={reveal}>
-              I'm Jaison Thomas, an IT professional with a background
-              in enterprise support and a Master of Cyber Security
-              from RMIT University. My journey is built on curiosity,
-              problem-solving, continuous learning and a passion
-              for technology.
+              From enterprise IT support to cybersecurity, my journey
+              has been shaped by hands-on experience, solving real-world
+              problems and continuously learning. With over three years
+              of experience at Tata Consultancy Services and a Master
+              of Cyber Security from RMIT University, I'm passionate
+              about building reliable, secure and efficient technology
+              solutions.
             </motion.p>
 
             <motion.div className="hero-actions" variants={reveal}>
@@ -141,6 +210,9 @@ function App() {
               >
                 Get in touch <ArrowUpRight size={16} />
               </button>
+              <a className="resume-button" href={`${import.meta.env.BASE_URL}documents/Jaison_Thomas_Resume.pdf`} download="Jaison_Thomas_Resume.pdf">
+                <Download size={16} /> Download résumé
+              </a>
             </motion.div>
 
             <motion.div className="hero-location" variants={reveal}>
@@ -163,7 +235,7 @@ function App() {
 
             <div className="overview-timeline">
               {timeline.map((item, index) => (
-                <div className="overview-item" key={`${item.year}-${index}`}>
+                <a className="overview-item overview-item-link" href={`#${item.target}`} key={`${item.year}-${index}`} aria-label={`${item.year}: ${item.title}. Jump to section`}>
                   <div className="overview-marker">
                     <span />
                   </div>
@@ -172,7 +244,7 @@ function App() {
                     <strong>{item.title}</strong>
                     <p>{item.detail}</p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
 
@@ -246,7 +318,9 @@ function App() {
           </div>
 
           <div className="education-card">
-            <div className="education-image">
+            <div className="education-image zoomable-photo" role="button" tabIndex={0}
+              aria-label="Enlarge Kristu Jyoti College campus" onClick={() => openPhoto(`${import.meta.env.BASE_URL}images/kristu-jyoti-college.jpg`, 'Kristu Jyoti College campus')}
+              onKeyDown={(event) => photoKeyDown(event, `${import.meta.env.BASE_URL}images/kristu-jyoti-college.jpg`, 'Kristu Jyoti College campus')}>
               <img
                 src={`${import.meta.env.BASE_URL}images/kristu-jyoti-college.jpg`}
                 alt="Kristu Jyoti College campus"
@@ -340,7 +414,9 @@ function App() {
               </div>
             </div>
 
-            <div className="daksh-image">
+            <div className="daksh-image zoomable-photo" role="button" tabIndex={0}
+              aria-label="Enlarge DAKSH 2019" onClick={() => openPhoto(`${import.meta.env.BASE_URL}images/daksh-2019.jpeg`, 'DAKSH 2019')}
+              onKeyDown={(event) => photoKeyDown(event, `${import.meta.env.BASE_URL}images/daksh-2019.jpeg`, 'DAKSH 2019')}>
               <img
                 src={`${import.meta.env.BASE_URL}images/daksh-2019.jpeg`}
                 alt="DAKSH 2019"
@@ -354,7 +430,9 @@ function App() {
       {/* GRADUATION */}
       <section className="graduation-section">
         <div className="content-width graduation-layout">
-          <div className="graduation-image">
+          <div className="graduation-image zoomable-photo" role="button" tabIndex={0}
+            aria-label="Enlarge MCA graduation" onClick={() => openPhoto(`${import.meta.env.BASE_URL}images/mca-graduation.jpeg`, 'MCA graduation')}
+            onKeyDown={(event) => photoKeyDown(event, `${import.meta.env.BASE_URL}images/mca-graduation.jpeg`, 'MCA graduation')}>
             <img
               src={`${import.meta.env.BASE_URL}images/mca-graduation.jpeg`}
               alt="MCA graduation"
@@ -414,7 +492,9 @@ function App() {
               </div>
             </div>
 
-            <div className="tcs-opening-photo">
+            <div className="tcs-opening-photo zoomable-photo" role="button" tabIndex={0}
+              aria-label="Enlarge Tata Consultancy Services" onClick={() => openPhoto(`${import.meta.env.BASE_URL}images/tcs.jpg`, 'Tata Consultancy Services')}
+              onKeyDown={(event) => photoKeyDown(event, `${import.meta.env.BASE_URL}images/tcs.jpg`, 'Tata Consultancy Services')}>
               <img
                 src={`${import.meta.env.BASE_URL}images/tcs.jpg`}
                 alt="Tata Consultancy Services office"
@@ -719,10 +799,12 @@ function App() {
             <h3>More than three years of learning by doing.</h3>
             <p>
               TCS gave me the opportunity to move from development into
-              enterprise operations, work with different teams, support
-              business-critical applications and take responsibility for
-              real-world problems. It shaped the way I approach technology:
-              understand the issue, learn the environment and keep improving.
+              enterprise operations, support business-critical applications
+              and take responsibility for real-world problems. Along the way,
+              I received three On the Spot Awards and was part of a team
+              recognised with a Best Team Award. More importantly, the
+              experience shaped how I approach technology: understand the
+              issue, learn the environment and keep improving.
             </p>
           </div>
         </div>
@@ -770,6 +852,30 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {showBackToTop && (
+        <button type="button" className="back-to-top" aria-label="Back to top"
+          onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>
+          <ChevronUp size={20} />
+        </button>
+      )}
+
+      {/* Photo lightbox */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div className="modal-backdrop photo-lightbox" role="presentation"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}>
+            <div className="photo-lightbox-content" role="dialog" aria-modal="true" aria-label={lightbox.alt}
+              onClick={event => event.stopPropagation()}>
+              <button type="button" className="modal-close lightbox-close" aria-label="Close enlarged photo"
+                onClick={() => setLightbox(null)}><X size={22} /></button>
+              <img src={lightbox.src} alt={lightbox.alt} />
+              <p>{lightbox.alt}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* CONTACT MODAL */}
       <AnimatePresence>
