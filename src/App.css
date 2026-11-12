@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -81,7 +80,7 @@ main {
 /* NAVIGATION */
 
 .navbar {
-  position: absolute;
+  position: fixed;
   z-index: 20;
   top: 0;
   left: 0;
@@ -516,7 +515,7 @@ main {
 }
 
 .image-caption,
-.daksh-image > span {
+.daksh-image>span {
   position: absolute;
   bottom: 18px;
   left: 20px;
@@ -897,12 +896,12 @@ main {
   text-align: left;
 }
 
-.contact-detail > svg:first-child {
+.contact-detail>svg:first-child {
   flex-shrink: 0;
   color: var(--blue);
 }
 
-.contact-detail > svg:last-child,
+.contact-detail>svg:last-child,
 .contact-detail small {
   margin-left: auto;
   color: #8192aa;
@@ -1119,6 +1118,7 @@ main {
 /* ACCESSIBILITY */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1127,4 +1127,99 @@ main {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* MOBILE NAVIGATION */
+
+.mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    position: fixed;
+    padding: 0 20px;
+    min-height: 70px;
+    background: #080c14;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    z-index: 30;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: #101a2c;
+    border-bottom: 1px solid rgba(121, 181, 255, 0.2);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    z-index: 25;
+  }
+
+  .nav-links.nav-links-open {
+    display: flex;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    display: block;
+    width: 100%;
+    padding: 13px 12px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .nav-links a:hover,
+  .nav-links button:hover {
+    color: #79b5ff;
+  }
+}
+/* CONTACT EMAIL AND COPY BUTTON */
+
+.contact-email {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #d4dfed;
+  text-decoration: none;
+}
+
+.contact-email:hover {
+  color: #79b5ff;
+}
+
+.contact-copy-button {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid rgba(121, 181, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(121, 181, 255, 0.06);
+  color: #79b5ff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.contact-copy-button:hover {
+  background: rgba(121, 181, 255, 0.16);
 }

@@ -1,0 +1,91 @@
+.woodside-section {
+  padding: 110px 24px;
+  background: #0b1120;
+}
+
+.woodside-container {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.woodside-heading {
+  margin: 50px 0;
+}
+
+.woodside-heading h2 {
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  color: #f5f7ff;
+  margin: 16px 0 24px;
+}
+
+.woodside-heading h2 span {
+  color: #79b5ff;
+}
+
+.woodside-company {
+  color: #a7b8d2;
+  margin-bottom: 12px;
+}
+
+.woodside-heading h3 {
+  font-size: 24px;
+  color: #f5f7ff;
+  margin-bottom: 8px;
+}
+
+.woodside-date {
+  color: #79b5ff;
+  font-size: 14px;
+}
+
+.woodside-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.woodside-card {
+  padding: 30px;
+  border: 1px solid rgba(121, 181, 255, 0.15);
+  border-radius: 18px;
+  background: #101a2c;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.woodside-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(121, 181, 255, 0.45);
+}
+
+.woodside-card svg {
+  color: #79b5ff;
+  margin-bottom: 20px;
+}
+
+.woodside-card h3 {
+  color: #f5f7ff;
+  font-size: 19px;
+  margin-bottom: 12px;
+}
+
+.woodside-card p {
+  color: #a7b8d2;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+@media (max-width: 700px) {
+  .woodside-section {
+    padding: 75px 20px;
+  }
+
+  .woodside-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .woodside-card {
+    padding: 24px;
+  }
+}

@@ -9,6 +9,7 @@ import {
   MapPin,
   GraduationCap,
   CalendarDays,
+  Menu,
   X,
   Copy,
   ExternalLink,
@@ -25,6 +26,8 @@ import {
 
 import './App.css'
 import './TCS.css'
+import RMIT from './RMIT'
+import Woodside from './Woodside';
 
 const reveal = {
   hidden: { opacity: 0, y: 22 },
@@ -33,13 +36,18 @@ const reveal = {
 
 const timeline = [
   { year: '2016', title: 'The beginning', detail: 'Started my MCA journey' },
-  { year: '2019', title: 'Graduation', detail: 'Completed my postgraduate studies' },
+  { year: '2019', title: 'MCA Graduation', detail: 'Completed my first Master’s degree' },
   { year: '2019', title: 'Tata Consultancy Services', detail: 'Started as a Systems Engineer' },
   { year: '2022', title: 'A new direction', detail: 'Completed my TCS chapter' },
+  { year: '2023', title: 'RMIT University', detail: 'Started my Master of Cyber Security in Melbourne' },
+  { year: '2025', title: 'XSPECTRE Cybersecurity', detail: 'Vulnerability Management Internship · April to June' },
+  { year: '2025', title: 'RMIT Graduation', detail: 'Graduated with a Master of Cyber Security' },
+  { year: '2026', title: 'Woodside Energy', detail: 'EUC Support Deployment Engineer · Melbourne, Australia' },
 ]
 
 function App() {
   const [contactOpen, setContactOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const email = 'write2jais22@gmail.com'
@@ -62,12 +70,32 @@ function App() {
         <a className="nav-logo" href="#home" aria-label="Jaison Thomas home">
           JT<span>.</span>
         </a>
-
-        <div className="nav-links">
-          <a href="#journey">Journey</a>
-          <a href="#education">Education</a>
-          <a href="#tcs">Experience</a>
-          <button onClick={() => setContactOpen(true)}>Contact</button>
+        <button
+          className="mobile-menu-toggle"
+          type="button"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileMenuOpen}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+        <div className={`nav-links ${mobileMenuOpen ? 'nav-links-open' : ''}`}>
+          <a href="#journey" onClick={() => setMobileMenuOpen(false)}>
+            Journey
+          </a>
+          <a href="#education" onClick={() => setMobileMenuOpen(false)}>Education</a>
+          <a href="#tcs" onClick={() => setMobileMenuOpen(false)}>TCS</a>
+          <a href="#rmit" onClick={() => setMobileMenuOpen(false)}>RMIT</a>
+          <a href="#xspectre" onClick={() => setMobileMenuOpen(false)}>XSPECTRE</a>
+          <a href="#woodside" onClick={() => setMobileMenuOpen(false)}>Woodside</a>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false)
+              setContactOpen(true)
+            }}
+          >
+            Contact
+          </button>
         </div>
       </nav>
 
@@ -95,9 +123,11 @@ function App() {
             </motion.h1>
 
             <motion.p className="hero-description" variants={reveal}>
-              I'm Jaison Thomas. This is a story of learning, adapting,
-              solving problems and growing through real-world experience
-              in technology.
+              I'm Jaison Thomas, an IT professional with a background
+              in enterprise support and a Master of Cyber Security
+              from RMIT University. My journey is built on curiosity,
+              problem-solving, continuous learning and a passion
+              for technology.
             </motion.p>
 
             <motion.div className="hero-actions" variants={reveal}>
@@ -128,7 +158,7 @@ function App() {
           >
             <div className="overview-heading">
               <span>THE JOURNEY SO FAR</span>
-              <span>2016 — 2022</span>
+              <span>2016 — 2026</span>
             </div>
 
             <div className="overview-timeline">
@@ -694,6 +724,8 @@ function App() {
           </div>
         </div>
       </section>
+      <RMIT />
+      <Woodside />
 
       {/* FOOTER */}
       <footer className="footer">
@@ -768,17 +800,23 @@ function App() {
                 have a conversation.
               </p>
 
-              <a className="contact-detail" href={`mailto:${email}`}>
+              <div className="contact-detail">
                 <Mail size={18} />
-                <span>{email}</span>
-                <ExternalLink size={15} />
-              </a>
 
-              <button className="contact-detail copy-detail" onClick={copyEmail}>
-                <Copy size={18} />
-                <span>{copied ? 'Email copied!' : 'Copy email address'}</span>
-                <small>{copied ? 'COPIED' : 'COPY'}</small>
-              </button>
+                <a href={`mailto:${email}`} className="contact-email">
+                  {email}
+                </a>
+
+                <button
+                  type="button"
+                  className="contact-copy-button"
+                  onClick={copyEmail}
+                  title={copied ? 'Copied!' : 'Copy email address'}
+                  aria-label={copied ? 'Email copied' : 'Copy email address'}
+                >
+                  {copied ? <CheckCircle2 size={18} /> : <Copy size={18} />}
+                </button>
+              </div>
 
               <a className="contact-detail" href={`tel:${phone}`}>
                 <Phone size={18} />
