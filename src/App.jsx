@@ -1,6 +1,20 @@
 
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import { createElement, forwardRef, useEffect, useState } from 'react'
+// Diagnostic build: render Motion elements as plain HTML to isolate browser freezes.
+// Restore the original App.jsx after testing.
+const staticMotionElement = (tag) => forwardRef(function StaticMotionElement(props, ref) {
+  const { initial, animate, exit, variants, transition, whileInView, viewport,
+    whileHover, whileTap, layout, layoutId, ...htmlProps } = props
+  return createElement(tag, { ...htmlProps, ref })
+})
+const motion = {
+  div: staticMotionElement('div'),
+  h1: staticMotionElement('h1'),
+  h2: staticMotionElement('h2'),
+  p: staticMotionElement('p'),
+  aside: staticMotionElement('aside'),
+}
+function AnimatePresence({ children }) { return children }
 import {
   ArrowDown,
   ArrowUpRight,
